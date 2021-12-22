@@ -40,9 +40,7 @@ async def test_find_many(preset_documents):
         assert a.nested.optional is None
 
     len_result = 0
-    async for a in Sample.find_many(Sample.integer > 1).find_many(
-        Sample.nested.optional == None
-    ):  # noqa
+    async for a in Sample.find_many(Sample.integer > 1).find_many(Sample.nested.optional is None):  # noqa
         assert a in result
         len_result += 1
 
@@ -68,11 +66,7 @@ async def test_find_many_skip(preset_documents):
         assert sample.nested.optional is None
 
     len_result = 0
-    async for sample in Sample.find_many(Sample.increment > 2).find_many(
-        Sample.nested.optional == None
-    ).skip(
-        1
-    ):  # noqa
+    async for sample in Sample.find_many(Sample.increment > 2).find_many(Sample.nested.optional is None).skip(1):  # noqa
         assert sample in result
         len_result += 1
 
@@ -99,11 +93,7 @@ async def test_find_many_limit(preset_documents):
         assert a.nested.optional is None
 
     len_result = 0
-    async for a in Sample.find_many(Sample.increment > 2).find(
-        Sample.nested.optional == None
-    ).sort(Sample.increment).limit(
-        2
-    ):  # noqa
+    async for a in Sample.find_many(Sample.increment > 2).find(Sample.nested.optional is None).sort(Sample.increment).limit(2):  # noqa
         assert a in result
         len_result += 1
 
@@ -130,15 +120,17 @@ async def test_find_one(preset_documents):
     assert a.nested.optional is None
 
     a = await Sample.find_one(Sample.integer > 100).find_one(
-        Sample.nested.optional == None
-    )  # noqa
+        Sample.nested.optional is None
+    )
+
     assert a is None
 
 
 async def test_get(preset_documents):
     a = await Sample.find_one(Sample.integer > 1).find_one(
-        Sample.nested.optional == None
-    )  # noqa
+        Sample.nested.optional is None
+    )
+
     assert a.integer > 1
     assert a.nested.optional is None
 
@@ -270,8 +262,9 @@ async def test_find_many_with_session(preset_documents, session):
     assert q_1.session == session
 
     q_2 = Sample.find_many(Sample.integer > 1).find_many(
-        Sample.nested.optional == None, session=session
+        Sample.nested.optional is None, session=session
     )
+
     assert q_2.session == session
 
     result = await q_2.to_list()
@@ -282,9 +275,7 @@ async def test_find_many_with_session(preset_documents, session):
         assert a.nested.optional is None
 
     len_result = 0
-    async for a in Sample.find_many(Sample.integer > 1).find_many(
-        Sample.nested.optional == None
-    ):  # noqa
+    async for a in Sample.find_many(Sample.integer > 1).find_many(Sample.nested.optional is None):  # noqa
         assert a in result
         len_result += 1
 

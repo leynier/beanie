@@ -10,17 +10,14 @@ async def test_delete_many(preset_documents):
         .count()
     )  # noqa
     await Sample.find_many(Sample.integer > 1).find_many(
-        Sample.nested.optional == None
-    ).delete()  # noqa
+        Sample.nested.optional is None
+    ).delete()
+
     count_after = await Sample.count()
     assert count_before - count_find == count_after
 
-    assert isinstance(
-        Sample.find_many(Sample.integer > 1)
-        .find_many(Sample.nested.optional == None)
-        .delete_many(),
-        DeleteMany,
-    )
+    assert isinstance(Sample.find_many(Sample.integer > 1)
+        .find_many(Sample.nested.optional is None).delete_many(), DeleteMany)
 
 
 async def test_delete_all(preset_documents):
@@ -52,8 +49,9 @@ async def test_delete_one(preset_documents):
 
     count_before = await Sample.count()
     await Sample.find_one(Sample.integer > 1).find_one(
-        Sample.nested.optional == None
-    ).delete_one()  # noqa
+        Sample.nested.optional is None
+    ).delete_one()
+
     count_after = await Sample.count()
     assert count_before == count_after + 1
 

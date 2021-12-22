@@ -40,8 +40,8 @@ class BulkWriter:
 
     async def commit(self):
         obj_class = None
-        requests = []
         if self.operations:
+            requests = []
             for op in self.operations:
                 if obj_class is None:
                     obj_class = op.object_class

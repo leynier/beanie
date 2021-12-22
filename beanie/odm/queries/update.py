@@ -125,17 +125,16 @@ class UpdateQuery(UpdateMethods, SessionMethods):
         update_result = yield from self._update().__await__()
         if self.upsert_insert_doc is None:
             return update_result
+        if update_result is not None and update_result.matched_count == 0:
+            return (
+                yield from self.document_model.insert_one(
+                    document=self.upsert_insert_doc,
+                    session=self.session,
+                    bulk_writer=self.bulk_writer,
+                ).__await__()
+            )
         else:
-            if update_result is not None and update_result.matched_count == 0:
-                return (
-                    yield from self.document_model.insert_one(
-                        document=self.upsert_insert_doc,
-                        session=self.session,
-                        bulk_writer=self.bulk_writer,
-                    ).__await__()
-                )
-            else:
-                return update_result
+            return update_result
 
 
 class UpdateMany(UpdateQuery):

@@ -78,7 +78,7 @@ class MigrationNode:
                         break
             else:
                 logger.info(f"Running {mode.distance} migrations forward")
-                for i in range(mode.distance):
+                for _ in range(mode.distance):
                     await migration_node.run_forward(
                         allow_index_dropping=allow_index_dropping
                     )
@@ -98,7 +98,7 @@ class MigrationNode:
                         break
             else:
                 logger.info(f"Running {mode.distance} migrations backward")
-                for i in range(mode.distance):
+                for _ in range(mode.distance):
                     await migration_node.run_backward(
                         allow_index_dropping=allow_index_dropping
                     )
@@ -165,9 +165,7 @@ class MigrationNode:
         :return:
         """
         logger.info("Building migration list")
-        names = []
-        for modulepath in path.glob("*.py"):
-            names.append(modulepath.name)
+        names = [modulepath.name for modulepath in path.glob("*.py")]
         names.sort()
 
         db = DBHandler.get_db()

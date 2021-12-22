@@ -28,13 +28,12 @@ class DummyOutput:
             if isinstance(to_parse, DummyOutput)
             else to_parse
         )
-        result_dict = {}
-        for key, value in input_dict.items():
-            if isinstance(value, (DummyOutput, dict)):
-                result_dict[key] = self.dict(to_parse=value)
-            else:
-                result_dict[key] = value
-        return result_dict
+        return {
+            key: self.dict(to_parse=value)
+            if isinstance(value, (DummyOutput, dict))
+            else value
+            for key, value in input_dict.items()
+        }
 
 
 def iterative_migration(

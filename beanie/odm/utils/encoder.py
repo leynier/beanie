@@ -95,10 +95,7 @@ class Encoder:
                     if link_fields[k].link_type == LinkTypes.DIRECT:
                         obj_dict[k] = o.to_ref()
                     if link_fields[k].link_type == LinkTypes.OPTIONAL_DIRECT:
-                        if o is not None:
-                            obj_dict[k] = o.to_ref()
-                        else:
-                            obj_dict[k] = o
+                        obj_dict[k] = o.to_ref() if o is not None else o
                 else:
                     obj_dict[k] = o
                 obj_dict[k] = encoder.encode(obj_dict[k])
@@ -108,12 +105,11 @@ class Encoder:
         """
         BaseModel case
         """
-        obj_dict = {}
-        for k, o in obj._iter(to_dict=False, by_alias=self.by_alias):
-            if k not in self.exclude:
-                obj_dict[k] = self._encode(o)
-
-        return obj_dict
+        return {
+            k: self._encode(o)
+            for k, o in obj._iter(to_dict=False, by_alias=self.by_alias)
+            if k not in self.exclude
+        }
 
     def encode_dict(self, obj):
         """
